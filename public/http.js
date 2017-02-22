@@ -1,3 +1,4 @@
+//famanoder 自己封装的 ajax  方法
 var http=function(loc){
 	if (loc.protocol=='file:') throw '"file://" protocol err';
 	var getXHR=function(){

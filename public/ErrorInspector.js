@@ -1,4 +1,4 @@
-(function(win){
+ (function(win){
 	win.util=function(){
 		var getArgType=function(arg){
 			return Object.prototype.toString.call(arg).match(/\s(\w+)/)[1].toLowerCase();

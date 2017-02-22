@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>demo 演示 被监控的页面 </title>
+		<script src="http://localhost:2333/ErrorInspector.js"></script>	
+</head>
+<body>
+    
+
+   <span id="test"  > 点击触发前端错误 </span>
+   <a id="test2" href="http//www.baidu.com/test"  > 点击触发404   </a>
+</body>
+<script type="text/javascript">
+		// 这里开始 应该是配置在 被监听的页面当中 
+		// api 参考  https://www.famanoder.com/bokes/5867eea54aee37201fb4d1cc
+		ErrorInspector.Config={
+			url:'http://localhost:2333/ErrorInspector/cmis_client',  // cmis_client 为数据库 name 字段  
+			// IgnoreFromJSPattern:/2333/i,
+			IgnoreMsgPattern:/\{.+\}/i,
+			IgnoreBrowserError:0
+		}
+
+		document.getElementById("test").onclick=function(e){ 
+			throw new Error("catch this error  -- from  client page    ")
+			ErrorInspector.log({
+				type:e.type,
+				tag:e.target.tagName,
+				clas:e.target.className
+			});
+ 
+			// ErrorInspector.tryit(function(a,b){  
+			// 	console.info(a,b);
+			// 	// as
+			// });
+		}
+
+</script>
+</html>

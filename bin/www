@@ -18,6 +18,7 @@ var  mongodb = require('mongodb');
 var  dbserver  = new mongodb.Server('localhost', 27017, {auto_reconnect:true});
 var  db = new mongodb.Db('error', dbserver, {safe:true});
 var mysocket=null;
+
 var openCollection=function(name,fn){
   db.open(function(err,db){
     err&&console.log(err);
@@ -26,6 +27,7 @@ var openCollection=function(name,fn){
     });
   }); 
 }
+
 var getArgType=function(arg){
   return Object.prototype.toString.call(arg).match(/\s(\w+)/)[1].toLowerCase();
 }
@@ -37,7 +39,7 @@ var extend=function(){
   var _extend=function(a,b){
     if (getArgType(b)=='object') {
       for(var j in b){
-        if(getArgType(b[j])=='object'){
+        if( (b[j])=='object'){
           a[j]=_extend(a[j]||{},b[j]);
         }else{
           a[j]=b[j];
@@ -50,6 +52,7 @@ var extend=function(){
   for(var i=1;i<objs.length;i++) _extend(res,objs[i]);
   return res;
 }
+
 app.get('/ErrorInspector/:name',function (req,res,next) {
   var query=req.query;
   // res.json(query);
@@ -74,9 +77,10 @@ app.get('/ErrorInspector/:name',function (req,res,next) {
     });
   }else{
     res.send('bad query!');
-  };
-     
+  }; 
 });
+
+
 app.get('/errors/:name',function (req,res,next) {
   require('../createweb')(req,res,next); 
 });
@@ -125,11 +129,13 @@ io=sio.listen(server);
 io.on('connection', function(socket) {
     console.log('connection');
     mysocket=socket;
-    socket.on('sendUserName',function(user){
+    socket.on('sendUserName',function(user){ 
+      console.log(" ---- ",user);	
       openCollection('badjs',function(coll){
         coll.find({name:user}).toArray(function(err,bads){
-          db.close();
-          socket.emit('show',{data:bads});
+			db.close();
+			console.log(" ---- ",bads);
+			socket.emit('show',{data:bads});
         });
       });
     });

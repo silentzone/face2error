@@ -3,27 +3,23 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
-	<title>前端异常与错误追踪</title>
+	<title>前端异常与错误追踪 </title>
 	<link rel="stylesheet" href="http://cdn.famanoder.com/stylesheets/page/fonticon.css">
 	<link rel="stylesheet" href="stylesheets/all.css">
-	<script src="http://localhost:2333/ErrorInspector.js"></script>	
+
 	<!--   <script src="http://cdn.famanoder.com/javascripts/lib/jquery0.js"></script> --> 
 	<script src="//cdn.bootcss.com/jquery/3.1.0/jquery.js"></script>
-    <script src="http://localhost:2333/http.js"></script> 
+	<!--   <script src="http://localhost:2333/http.js"></script>   -->
 	<!-- ErrorInspector.Config must before at all where you need to inspect --> 
 	<script src="http://localhost:2333/socket.io.js"></script>
 	 
 </head>
 <body>
 	<nav>
-		<a href="http://famanoder.com">
+		<a href="">
 			<img src="http://cdn.famanoder.com/images/logo.png" alt="famanoder-logo" width=160 height=50 class="fl">
 		</a>
-		<div class="zan-music fr">
-			<div title="3881人已赞" class="zan fl">
-				<div class="icon icon-thumbs-up-alt"></div>
-				<span>赞（<span style="font-family:'Georgia';">3881</span>）</span>
-			</div>
+		<div class="zan-music fr"> 
 		</div>
 		<a href="http://famanoder.com/suggests" class="fr hf">反馈</a>
 		<div class="sets fr">
@@ -41,7 +37,7 @@
 					<input type="radio" class="inptvd" name="news" id="new2">
 					<label for="new2">否</label>
 				</div>
-				<div class="set">邮件提醒：
+	<!-- 			<div class="set">邮件提醒：
 					<input type="radio" class="inptvd" name="mail" id="mail1">
 					<label for="mail1">是</label>
 					<input type="radio" class="inptvd" name="mail" id="mail2" checked="checked">
@@ -52,32 +48,25 @@
 					<label for="showtp1">列表</label>
 					<input type="radio" class="inptvd" name="showtp" id="showtp2" checked="checked">
 					<label for="showtp2">H5</label>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</nav>
 	<!-- <div class="bg" style="position: absolute;top:100px;left:100px;bottom:100px;right:100px;background:#ccc;"></div> -->
-<!-- 	<div class="class_collect"><span></span>
-       点击页面 提示错误
+	<!-- <div class="class_collect"><span></span>
+ 
 	</div> -->
-	<div class="errs">
-		
+	<div class="errs"> 
+	<!-- 日志区域 -->
 	</div>
 	<script>
-		ErrorInspector.Config={
-			url:'http://localhost:2333/ErrorInspector/xiaofeng',
-			qs:{
-				ext:'hufeng'
-			},
-			// IgnoreFromJSPattern:/2333/i,
-			IgnoreMsgPattern:/\{.+\}/i,
-			IgnoreBrowserError:0
-		}
-		// ErrorInspector.report({
-		// 	a:1,b:2
-		// });
+
+ 		// socket io 连接
 		var socket = io.connect("http://localhost:2333");
-		var user= "xiaofeng"; // location.pathname.replace(/.*\/(\w+)$/i,'$1');   数据库查询的 标识字段 
+		// 这里是向数据库 name 字段查询  需要做到前台上去选择 
+		var user= "cmis_client"  //location.pathname.replace(/.*\/(\w+)$/i,'$1');
+
+		//错误日志模板
 		var item=[
 			'<div class="err" style="background:{isNew};">',
 				'<i class="fl icon icon-check-empty"></i>',
@@ -99,62 +88,44 @@
 			var n=x.replace(/([^%]+)%$/,'$1');
 			return Math.ceil(n/20)*0.2;
 		}
+		// 输出的数据绑定
 		function render(data){
-			return $.map(data,function(err){
-				var bro=Math.random()>0.5?err.browser:(Math.random()>0.5?'IE/11':'IE/9.0');
+			 var re = $.map(data,function(err){ 
+				var bro=err.browser; // Math.random()>0.5?err.browser:(Math.random()>0.5?'IE/11':'IE/9.0');
 				var good=/chrome|firefox|opera|safari|(?:ie\/\d{2})/i.test(bro);
 				var reg=/([\w\s]+:)(.*)/;
 				var msg=err.msg.match(reg)?err.msg.replace(reg,'<i class="red">$1</i><u>$2</u>'):err.msg;
 				return smTempl(item,{
 					isNew:err.new?'#ffc5c5':'transparent',
-					opacity:fmtOp(Math.random()>0.5?'5%':'50%'),
-					hot:'5%',
+					opacity: '50%', // fmtOp(Math.random()>0.5?'5%':'50%'),
+					hot:'5',
 					time:err.time,
 					browser:bro,
 					browserType:(good?'nice':'bs')+'-browser',
 					msg:msg
 				})
-			});
+			}); 
+			return re;
 		}
 		socket.on('connect', function () {
-			socket.emit('sendUserName',user);
-			socket.on('show',function(data) {
-				console.log(data)
-				if (data.data.length) {
-					$('.errs').append(render(data.data).join(''));
+			socket.emit('sendUserName',user);  
+			socket.on('show',function(data) { 
+				// console.log("按照之前send 的username  查询 库中匹配的数据集合",data)
+				if (data.data.length) { 
+					var errs = render(data.data).join('');  
+					$('.errs').append(errs);
 				};
 			});
-			socket.on('new_error',function(data){
+			socket.on('new_error',function(data){ 
 				document.title='程序出错啦！！！';
 				var err=render(data.data).join('');
 				$('.err').length?$('.err:first').before(err):$('.errs').append(err);
 			});
 		});
-	// document.onmousemove=function(e){
-	// 	document.querySelector('.bg').style.transform='translate('+(e.clientX-document.body.clientWidth/2)/(document.body.clientWidth/2)*30+'px,'+(e.clientY-document.body.clientHeight/2)/(document.body.clientHeight/2)*30+'px)';
-	// }
-
-	document.body.onclick=function(e){s
-		ErrorInspector.log({
-			type:e.type,
-			tag:e.target.tagName,
-			clas:e.target.className
-		});
-		ErrorInspector.tryit(function(rep){
-			as
-		});
-	}
-	// window.onerror=function(a,b,c){
-	// }
-	// 	console.log(a)
-	// 	new Image().src='http://cfdf/sa';
-	// 	return true;
-	// }
-	// acx
-	var tryEvts=function(){
-		console.log(this)
-	}
-	 
+ 
+ 
+ 
+ 
 	</script>
 </body>
 </html>
