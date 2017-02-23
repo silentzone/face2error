@@ -3,12 +3,11 @@
 <head>
 	<title>demo 演示 被监控的页面 </title>
 		<script src="http://localhost:2333/ErrorInspector.js"></script>	
+		 <script src="http://localhost:2333/http.js"></script>
 </head>
 <body>
-    
-
-   <span id="test"  > 点击触发前端错误 </span>
-   <a id="test2" href="http//www.baidu.com/test"  > 点击触发404   </a>
+     
+   <span id="test"  > 点击触发前端错误 </span> <br> 
 </body>
 <script type="text/javascript">
 		// 这里开始 应该是配置在 被监听的页面当中 
@@ -20,19 +19,11 @@
 			IgnoreBrowserError:0
 		}
 
-		document.getElementById("test").onclick=function(e){ 
-			throw new Error("catch this error  -- from  client page    ")
-			ErrorInspector.log({
-				type:e.type,
-				tag:e.target.tagName,
-				clas:e.target.className
-			});
- 
-			// ErrorInspector.tryit(function(a,b){  
-			// 	console.info(a,b);
-			// 	// as
-			// });
+		document.getElementById("test").onclick=function(e){  
+			throw new Error(" throw this error  -- from  client page "); 
+		 
 		}
-
+	 
+		
 </script>
 </html>

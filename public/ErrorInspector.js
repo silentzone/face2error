@@ -187,7 +187,8 @@
 		var cfs={
 			msg:err,
 			from:url,
-			inspector:'window'
+			inspector:'window',
+			stack: error.stack || ""
 		};
 		row&&(cfs.row=row);
 		col&&(cfs.col=col);

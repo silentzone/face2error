@@ -48,7 +48,7 @@
 	.inpt:focus{box-shadow: 0 0 5px #7DF3E6;border: 1px solid #30D3C2;}
 	.tip{line-height: 20px;color: #aaa;}
 	.char{padding: 0 2px;border: 1px solid #30D3C2;margin: 0 2px;background-color: #CDF9F9;}
-	.err{height:24px;line-height: 24px;font-size: 12px;color: #666;padding: 0 10px;border-bottom: 1px solid #eee;}
+	.err{min-height:24px; line-height: 24px;font-size: 12px;color: #666;padding: 0 10px;border-bottom: 1px solid #eee;}
 	.class_collect {
 		border:1px #21b57 solid;
 		border-radius:5px;
@@ -120,3 +120,6 @@
     .nice-browser{background:#29f53a ;color:#1dad7f;}
     .bs-browser{background:#ddd;color:#bbb;text-decoration: line-through;}
     .red{color: #f35151;font-weight: 700;}
+
+    .detial { display: block; clear:both;overflow:hidden; display: none;  background: #fff; padding: 10px; margin: 10px 0;   }
+    .detial ul li { border-bottom: dotted 1px #efefef; }

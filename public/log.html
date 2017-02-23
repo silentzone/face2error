@@ -75,7 +75,15 @@
 				'<div class="fl time">{time}</div>',
 				'<div class="fl browser {browserType}">{browser}</div>',
 				'<div class="fl msg">{msg}</div>',
-			'</div>'
+				'<div class="detial"> <ul>'
+				+ '<li><span class="label"> 错误来源:</span> {from} </li>' 
+				+ '<li><span class="label"> 错误对象:</span> {stack} </li>'
+				+ '<li><span class="label"> 错误消息:</span> {msg} </li>' 
+				+ '<li><span class="label"> 错误行:</span> {row} </li>'
+				+ '<li><span class="label"> 错误列:</span> {col} </li>'
+				+ '</ul></div>',
+				'</div>'
+
 		].join('');
 		function smTempl(mp,conf){
 			for(var c in conf){
@@ -90,6 +98,7 @@
 		}
 		// 输出的数据绑定
 		function render(data){
+			console.log(data);
 			 var re = $.map(data,function(err){ 
 				var bro=err.browser; // Math.random()>0.5?err.browser:(Math.random()>0.5?'IE/11':'IE/9.0');
 				var good=/chrome|firefox|opera|safari|(?:ie\/\d{2})/i.test(bro);
@@ -102,7 +111,12 @@
 					time:err.time,
 					browser:bro,
 					browserType:(good?'nice':'bs')+'-browser',
-					msg:msg
+					msg:msg,
+					from:err.from,
+					stack:err.stack,
+					row:err.row,
+					col:err.col
+
 				})
 			}); 
 			return re;
@@ -123,6 +137,12 @@
 			});
 		});
  
+
+ 		$(".errs").on("click",function (e) { 
+ 			if(e.target.className == "err") {
+ 				$(e.target).find(".detial").slideToggle();
+ 			} 
+ 		});
  
  
  
